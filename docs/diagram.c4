@@ -1,0 +1,114 @@
+specification {
+  element person {
+    style {
+      shape person
+      color green
+    }
+  }
+
+  element app
+  element container
+  element queue {
+    style {
+      shape queue
+    }
+  }
+  element db {
+    style {
+      shape cylinder
+    }
+  }
+}
+
+model {
+  user = person "Пользователь" "Пользователь соцсети"
+
+
+   socialNet = app "Социальная сеть" {
+    apiGateway = container "API Gateway" {
+      description 'Принимает запросы с UI и перенаправляет их сервисам'
+      technology 'Python'
+    }
+
+    usersService = container 'User Service' {
+      description 'Хранит данных о пользователях, авторизации'
+      technology 'Python'
+    }
+
+    postsService = container 'Postы Service' {
+      description 'Управление постами и комментарии'
+      technology 'Golang/Python'
+    }
+
+    statsService = container 'Statistics Service' {
+      description 'Сбор и анализ статистики подсчета лайков, просмотров, комментариев'
+      technology 'Python'
+    }
+
+    postgresDbUsers = db "PostgreSQL" {
+      description "Хранение данных пользователей"
+      technology "Database"
+      style {
+        shape cylinder
+      }
+    }
+
+    cassandraDbPosts = db "Cassandra" {
+      description "Хранение постов и комментариев"
+      technology "Database"
+      style {
+        shape cylinder
+      }
+    }
+
+    clickhouseDb = db "ClickHouse" {
+      description "Хранение cтатистики"
+      technology "Database"
+      style {
+        shape cylinder
+      }
+    }
+
+    kafka = queue "Kafka" {
+      description "Обмен событиями между сервисами"
+      technology "Message Broker"
+      style {
+        shape queue
+      }
+    }
+   }
+
+  user -> application_web 'Взаимодействует'
+  application_web -> apiGateway 'REST API'
+
+  apiGateway -> usersService 'Регистрация, авторизация и поиск пользователя'
+  apiGateway -> postsService 'Создание, редактирование и просмотр постов'
+  apiGateway -> statsService 'Получение статистики'
+  apiGateway -> messageBroker 'Отправка событий о действиях пользователей'
+
+  usersService -> usersDb 'Хранение данных пользователей'
+  postsService -> postsDb 'Хранение постов и комментариев'
+  statsService -> statsDb 'Хранение статистики'
+
+  postsService -> messageBroker 'Подпись на события'
+  statsService -> messageBroker 'Подпись на события'
+
+  user -> socialNet.apiGateway "Использует HTTPS"
+  socialNet.apiGateway -> socialNet.userService "Регистрация, авторизация и обновления"
+  socialNet.apiGateway -> socialNet.postsService "Посты, лайки, комментарии"
+  socialNet.apiGateway -> socialNet.statisticsService "Аналитика, статистика пользователя"
+  socialNet.userService -> socialNet.postgresDbUsers "Читает/Пишет"
+  socialNet.postsService -> socialNet.cassandraDbPosts "Читает/Пишет"
+  socialNet.statisticsService -> socialNet.clickhouseDb "Читает/Пишет"
+  socialNet.apiGateway -> socialNet.kafka "Публикует"
+  socialNet.postsService -> socialNet.kafka "Публикует"
+  socialNet.statisticsService -> socialNet.kafka "Подписывается на события"
+}
+
+views {
+  view index {
+    title ' Social Network'
+
+    include *
+  }
+}
