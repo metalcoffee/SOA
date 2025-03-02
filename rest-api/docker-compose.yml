@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  api-gateway:
+    build: ./api_gateway
+    ports:
+      - "5000:5000"
+    networks:
+      - social-network
+    depends_on:
+      - user-service
+
+  user-service:
+    build: ./user_service
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_ENV=development
+    networks:
+      - social-network
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - social-network
+
+volumes:
+  postgres_data:
+
+networks:
+  social-network:
