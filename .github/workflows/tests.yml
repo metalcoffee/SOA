@@ -28,6 +28,7 @@ jobs:
       run: |
         docker compose -f rest-api/docker-compose.yml up -d --build
         sleep 10
+        docker compose -f rest-api/docker-compose.yml logs user-service
 
     - name: Run User Service tests
       run: docker compose -f rest-api/docker-compose.yml exec rest-api/user-service pytest tests/ -v
