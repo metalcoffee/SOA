@@ -1,0 +1,37 @@
+name: Docker Tests
+
+on: [push, pull_request]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: users
+        ports:
+          - 5432:5432
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker
+      uses: docker/setup-qemu-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and start containers
+      run: |
+        docker compose -f rest-api/docker-compose.yml up -d --build
+        sleep 10
+        docker compose -f rest-api/docker-compose.yml logs user-service
+
+    - name: Run User Service tests
+      run: docker compose -f rest-api/docker-compose.yml exec rest-api/user-service pytest tests/ -v
+
+    - name: Run API Gateway tests
+      run: docker compose -f rest-api/docker-compose.yml exec api-gateway pytest tests/ -v
