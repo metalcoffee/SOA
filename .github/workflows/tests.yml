@@ -26,11 +26,11 @@ jobs:
 
     - name: Build and start containers
       run: |
-        docker compose -f docker-compose.yml up -d
+        docker compose -f rest-api/docker-compose.yml up -d
         sleep 30
 
     - name: Run User Service tests
-      run: docker compose exec user-service pytest tests/ -v
+      run: docker compose exec rest-api/user-service pytest tests/ -v
 
     - name: Run API Gateway tests
-      run: docker compose exec api-gateway pytest tests/ -v
+      run: docker compose exec rest-api/api-gateway pytest tests/ -v
