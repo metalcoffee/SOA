@@ -30,7 +30,7 @@ jobs:
         sleep 30
 
     - name: Run User Service tests
-      run: docker compose exec user-service pytest rest-api/user-service/tests/ -v
+      run: docker compose exec rest-api/user-service pytest rest-api/user-service/tests/ -v
 
     - name: Run API Gateway tests
-      run: docker compose exec api-gateway pytest rest-api/api-gateway/tests/ -v
+      run: docker compose exec rest-api/api-gateway pytest rest-api/api-gateway/tests/ -v
