@@ -27,7 +27,6 @@ jobs:
     - name: Build and start containers
       run: |
         docker compose -f rest-api/docker-compose.yml up -d --build
-        docker compose -f rest-api/docker-compose.yml run --rm user-service wait-for-it postgres:5432
         sleep 10
 
     - name: Run User Service tests
