@@ -3,3 +3,8 @@ requests==2.26.0
 Werkzeug==2.2.2
 pytest==7.4.0
 requests-mock==1.11.0
+flask-jwt-extended==4.4.0
+grpcio==1.66.1
+grpcio-tools==1.66.1
+google-api-python-client==2.86.0
+python-dotenv==0.21.0

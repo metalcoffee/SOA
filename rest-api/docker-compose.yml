@@ -9,6 +9,28 @@ services:
       - social-network
     depends_on:
       - user-service
+      - post-service
+      - promo-service
+    environment:
+      - JWT_SECRET=super-secret
+
+  post-service:
+    build: ./posts
+    volumes:
+      - post-data:/app/data
+    networks:
+      - social-network
+    ports:
+      - "50051:50051"
+
+  promo-service:
+    build: ./promos
+    volumes:
+      - promo-data:/app/data
+    networks:
+      - social-network
+    ports:
+      - "50052:50052"
 
   user-service:
     build: ./user_service
@@ -34,6 +56,8 @@ services:
 
 volumes:
   postgres_data:
+  post-data:
+  promo-data:
 
 networks:
   social-network:

@@ -1,0 +1,7 @@
+grpcio==1.66.1
+grpcio-tools==1.66.1
+sqlalchemy==2.0.28
+python-dateutil==2.8.2
+pytest==7.4.0
+pytest-cov==4.1.0
+requests-mock==1.11.0
